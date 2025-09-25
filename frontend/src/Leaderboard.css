@@ -1,0 +1,355 @@
+/* Leaderboard Container */
+.leaderboard-container {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+  max-width: 400px;
+  min-height: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Sidebar Integration - Make leaderboard fit in sidebar */
+.custom-module .leaderboard-container {
+  max-width: 100%;
+  min-height: auto;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.custom-module .leaderboard-header {
+  background: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 0;
+  border-radius: 0;
+}
+
+.custom-module .leaderboard-header h2 {
+  font-size: 1.1em;
+}
+
+.custom-module .leaderboard-tabs {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-module .leaderboard-content {
+  padding: 8px 0;
+  max-height: 300px;
+}
+
+/* Header */
+.leaderboard-header {
+  background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+  padding: 16px;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 2px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.leaderboard-header h2 {
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.refresh-button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.refresh-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tabs */
+.leaderboard-tabs {
+  display: flex;
+  background: #2a2a2a;
+  border-bottom: 2px solid #333;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 8px;
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9em;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+}
+
+.tab:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.tab.active {
+  background-color: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+  border-bottom-color: #ffd700;
+  font-weight: bold;
+}
+
+/* Content Area */
+.leaderboard-content {
+  padding: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Loading and Error States */
+.loading, .error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #ccc;
+}
+
+.error p {
+  color: #ff6b6b;
+  margin-bottom: 16px;
+}
+
+.retry-button {
+  background: #ff6b6b;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background: #ff5252;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Leaderboard List */
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Leaderboard Item */
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: #2a2a2a;
+  border-radius: 8px;
+  border: 1px solid #404040;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.leaderboard-item:hover {
+  background: #333;
+  border-color: #555;
+  transform: translateY(-1px);
+}
+
+/* Top Three Special Styling */
+.leaderboard-item.top-three {
+  background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.leaderboard-item.top-three:nth-child(1) {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), #2a2a2a);
+}
+
+.leaderboard-item.top-three:nth-child(2) {
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), #2a2a2a);
+}
+
+.leaderboard-item.top-three:nth-child(3) {
+  background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), #2a2a2a);
+}
+
+/* Rank Display */
+.rank {
+  font-size: 1.2em;
+  font-weight: bold;
+  width: 40px;
+  text-align: center;
+  margin-right: 12px;
+}
+
+/* User Info */
+.user-info {
+  flex: 1;
+  min-width: 0; /* Allows text to truncate */
+}
+
+.username {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 0.85em;
+  color: #aaa;
+}
+
+.stat-label {
+  color: #888;
+}
+
+.stat-value {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* User Badge */
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.online-indicator {
+  font-size: 0.8em;
+}
+
+.crown {
+  font-size: 1.2em;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Footer */
+.leaderboard-footer {
+  background: #2a2a2a;
+  padding: 12px 16px;
+  border-radius: 0 0 10px 10px;
+  border-top: 1px solid #333;
+}
+
+.global-stats {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-size: 0.85em;
+  color: #888;
+}
+
+.global-stats span:not(:contains('•')) {
+  color: #ccc;
+}
+
+/* Scrollbar Styling */
+.leaderboard-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.leaderboard-content::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.leaderboard-content::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.leaderboard-content::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+  .leaderboard-container {
+    max-width: 100%;
+    margin: 0 8px;
+  }
+  
+  .leaderboard-header {
+    padding: 12px;
+  }
+  
+  .leaderboard-header h2 {
+    font-size: 1.2em;
+  }
+  
+  .tab {
+    padding: 10px 6px;
+    font-size: 0.8em;
+  }
+  
+  .leaderboard-item {
+    padding: 10px;
+  }
+  
+  .username {
+    font-size: 1em;
+  }
+  
+  .user-stats {
+    font-size: 0.8em;
+  }
+}
+
+/* Animation for new entries */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.leaderboard-item {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Highlight current user */
+.leaderboard-item.current-user {
+  border: 2px solid #4a90e2;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), #2a2a2a);
+}
+
+.leaderboard-item.current-user .username {
+  color: #4a90e2;
+}
