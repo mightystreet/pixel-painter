@@ -257,7 +257,16 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
     return () => clearInterval(interval);
   }, [isFullscreen]);
   
-  // === FULLSCREEN EVENT LISTENERS ===
+  // === FULLSCREEN EXIT HANDLER ===
+  function handleExitFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  }
   // Listen for fullscreen state changes across different browsers
   useEffect(() => {
     /**
@@ -1059,8 +1068,11 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
       )}
       
       {/* === FULLSCREEN TOGGLE BUTTON === */}
-      {/* Always visible button to enter fullscreen mode */}
-      <FullscreenButton onClick={handleFullscreen} />
+      {/* Button enters or exits fullscreen depending on state */}
+      <FullscreenButton 
+        onClick={isFullscreen ? handleExitFullscreen : handleFullscreen}
+        isFullscreen={isFullscreen}
+      />
     </div>
   );
 }
