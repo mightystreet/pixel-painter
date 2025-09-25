@@ -69,7 +69,7 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
   
   // === HOVER TOOLTIP STATE ===
   const [hoveredCellInfo, setHoveredCellInfo] = useState(null); // Information about hovered cell in fullscreen
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 }); // Tooltip position
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 }); // Tooltip position (aligned to cell)
   const [hoverTooltipEnabled, setHoverTooltipEnabled] = useState(false); // Whether hover tooltip is enabled
   
   // === WEBSOCKET CONNECTION ===
@@ -117,19 +117,15 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
       
       // Handle initial grid state from server
       if (data.type === "init" && data.grid) {
-        // Store color, username, and health information from server
+        // Store both color and username information from server
         const fullGrid = {};
         for (const [key, value] of Object.entries(data.grid)) {
           if (typeof value === "string") {
             // Legacy format: just color
-            fullGrid[key] = { color: value, username: null, health: 100 };
+            fullGrid[key] = { color: value, username: null };
           } else {
-            // New format: { color, username, health }
-            fullGrid[key] = { 
-              color: value.color, 
-              username: value.username,
-              health: value.health || 100
-            };
+            // New format: { color, username }
+            fullGrid[key] = { color: value.color, username: value.username };
           }
         }
         setPixels(fullGrid);
@@ -143,8 +139,7 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
             ...prev, 
             [data.key]: { 
               color: data.color, 
-              username: data.username || null,
-              health: data.health || 100
+              username: data.username || null 
             } 
           };
         });
@@ -515,6 +510,7 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
     }
     
     // Set hovered cell info
+    // Set hovered cell info
     setHoveredCellInfo({
       col,
       row,
@@ -525,36 +521,37 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
       owner: pixelOwner,
       coordinates: `(${col}, ${row})`
     });
-    
-    // Set tooltip position relative to the viewport
-    // Adjust position to prevent tooltip from going off-screen
-    const tooltipWidth = 220;
-    const tooltipHeight = 160; // Increased to account for actual content height
+
+    // Align tooltip to the hovered cell in the viewport
+    // Align tooltip to the hovered cell in the viewport
+    // Use the rect, scaleX, scaleY already declared above
+    const cellCanvasX = (col * cellSize * zoom) - offset.x;
+    const cellCanvasY = (row * cellSize * zoom) - offset.y;
+    // Convert to viewport coordinates
+    const cellScreenX = rect.left + cellCanvasX / scaleX;
+    const cellScreenY = rect.top + cellCanvasY / scaleY;
+    // Tooltip size and margin
+    const tooltipWidth = 180;
+    const tooltipHeight = 180;
     const margin = 10;
-    
-    let tooltipX = e.clientX + margin;
-    let tooltipY = e.clientY - tooltipHeight - margin;
-    
-    // Adjust if tooltip would go off the right edge
-    if (tooltipX + tooltipWidth > window.innerWidth) {
-      tooltipX = e.clientX - tooltipWidth - margin;
+    // Default: show tooltip above the cell
+    let tooltipX = cellScreenX;
+    let tooltipY = cellScreenY - tooltipHeight - margin;
+    // If not enough space above, show below
+    if (tooltipY < margin) {
+      tooltipY = cellScreenY + cellSize * zoom + margin;
     }
-    
-    // Adjust if tooltip would go off the left edge
+    // Clamp horizontally
+    if (tooltipX + tooltipWidth > window.innerWidth) {
+      tooltipX = window.innerWidth - tooltipWidth - margin;
+    }
     if (tooltipX < margin) {
       tooltipX = margin;
     }
-    
-    // Adjust if tooltip would go off the top edge
-    if (tooltipY < margin) {
-      tooltipY = e.clientY + margin;
-    }
-    
-    // Adjust if tooltip would go off the bottom edge
+    // Clamp vertically
     if (tooltipY + tooltipHeight > window.innerHeight) {
       tooltipY = window.innerHeight - tooltipHeight - margin;
     }
-    
     setTooltipPosition({
       x: tooltipX,
       y: tooltipY
@@ -657,8 +654,7 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
           type: "colorCell", 
           key: confirmPlace.key, 
           color, 
-          username,
-          health: 100
+          username 
         }));
         
         // Trigger leaderboard refresh after successful pixel placement
@@ -993,19 +989,24 @@ function Grid({ cellSize = 20, canvasSize = 720, onPixelPlaced }) {
           position: "fixed",
           left: tooltipPosition.x,
           top: tooltipPosition.y,
-          background: "rgba(0, 0, 0, 0.9)",
+          width: 180,
+          height: 180,
+          background: "rgba(0, 0, 0, 0.92)",
           color: "#fff",
-          borderRadius: 8,
-          padding: "12px 16px",
+          borderRadius: 12,
+          padding: "14px 14px 10px 14px",
           fontSize: 12,
           fontFamily: "monospace",
           zIndex: 1000,
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.35)",
           pointerEvents: "none", // Don't interfere with mouse events
-          minWidth: 220,
-          maxWidth: 220,
-          border: "1px solid rgba(255, 255, 255, 0.2)",
+          border: "1.5px solid rgba(255, 255, 255, 0.18)",
           animation: "fadeIn 0.2s ease-out",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          overflow: "hidden"
         }}>
           <style>{`
             @keyframes fadeIn {

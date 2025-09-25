@@ -1,23 +1,29 @@
 # Dependencies
 node_modules/
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Production builds
-build/
+# Node modules and build output
+node_modules/
 dist/
+build/
 
-# Environment variables
+# Logs
+*.log
+logs
+npm-debug.log*
+*.pid
+*.seed
+
+# Environment files
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Database files
+# SQLite and DB files
 *.sqlite
 *.db
+backend/data/*.sqlite
 
 # OS generated files
 .DS_Store
@@ -28,21 +34,19 @@ dist/
 ehthumbs.db
 Thumbs.db
 
-# VS Code settings
+# VSCode and IDE settings
 .vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.idea/
 
-# Logs
-logs
-*.log
+# Misc
+*.local
 
-# Runtime data
-pids
-*.pid
-*.seed
+# Ignore lock files if you prefer (optional)
+# package-lock.json
 *.pid.lock
 
 # Coverage directory used by tools like istanbul

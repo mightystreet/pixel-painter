@@ -50,8 +50,7 @@ function App() {
   // true = show login form, false = show registration form
   const [showLogin, setShowLogin] = useState(true);
   
-  // State to control leaderboard visibility
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  // Leaderboard is always visible now, so no need for showLeaderboard state
   
   // State to trigger leaderboard refresh
   const [leaderboardRefresh, setLeaderboardRefresh] = useState(0);
@@ -72,8 +71,7 @@ function App() {
         icon: '👤'
       }
     },
-    // Conditionally add leaderboard module when showLeaderboard is true
-    ...(showLeaderboard ? [{
+    {
       id: 'leaderboard',
       title: 'Leaderboard',
       type: 'custom',
@@ -85,7 +83,7 @@ function App() {
           />
         )
       }
-    }] : [])
+    }
   ];
 
   const rightPanelModules = [
@@ -162,41 +160,24 @@ function App() {
     <div className="layout-container">
       {/* Left sidebar component with modules */}
       <Side position="left" modules={leftPanelModules} collapsible={true} />
-      
+
       {/* Main content area containing the pixel art grid */}
       <main className="main-content">
         {/* User info and controls section in top-right corner */}
         <div style={{ float: "right", display: "flex", alignItems: "center", gap: 8 }}>
-          {/* Leaderboard toggle button */}
-          <button 
-            onClick={() => setShowLeaderboard(!showLeaderboard)}
-            style={{
-              background: showLeaderboard ? "#ffd700" : "#4a4a4a",
-              color: showLeaderboard ? "#000" : "#fff",
-              border: "none",
-              padding: "8px 12px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "14px",
-              fontWeight: "bold"
-            }}
-          >
-            🏆 Leaderboard
-          </button>
-          
           {/* Display current user's username */}
           <span style={{ fontWeight: 600 }}>{username}</span>
           {/* Logout button that calls handleLogout function */}
           <button onClick={handleLogout}>Logout</button>
         </div>
-        
+
         {/* Main pixel art grid component */}
         <Grid onPixelPlaced={refreshLeaderboard} />
       </main>
-      
+
       {/* Right sidebar component with modules */}
       <Side position="right" modules={rightPanelModules} collapsible={true} />
-      
+
       {/* Footer component at bottom of page */}
       <Footer />
     </div>

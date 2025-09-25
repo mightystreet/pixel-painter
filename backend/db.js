@@ -46,7 +46,6 @@ export function initDB() {
       y INTEGER NOT NULL,
       color TEXT NOT NULL,
       username TEXT NOT NULL,
-      health INTEGER DEFAULT 100,
       placed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (username) REFERENCES users(username)
     )`);
@@ -79,11 +78,6 @@ export function initDB() {
     }
     try {
       db.exec(`ALTER TABLE users ADD COLUMN is_online BOOLEAN DEFAULT 0`);
-    } catch (e) {
-      // Column might already exist
-    }
-    try {
-      db.exec(`ALTER TABLE pixels ADD COLUMN health INTEGER DEFAULT 100`);
     } catch (e) {
       // Column might already exist
     }
@@ -199,22 +193,21 @@ export function getAllUsersForLeaderboard() {
 }
 
 /**
- * Save a pixel to the database
- * @param {string} gridKey - Unique grid key in format "x,y"
+ * Save a pixel placement to the database
+ * @param {string} gridKey - Grid key in format "x,y"
  * @param {number} x - X coordinate
  * @param {number} y - Y coordinate
  * @param {string} color - Pixel color
  * @param {string} username - Username who placed the pixel
- * @param {number} health - Pixel health value (default: 100)
  * @returns {Promise} - Database insertion result
  */
-export function savePixel(gridKey, x, y, color, username, health = 100) {
+export function savePixel(gridKey, x, y, color, username) {
   try {
     const stmt = db.prepare(`
-      INSERT OR REPLACE INTO pixels (grid_key, x, y, color, username, health, placed_at) 
-      VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      INSERT OR REPLACE INTO pixels (grid_key, x, y, color, username, placed_at) 
+      VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     `);
-    return stmt.run(gridKey, x, y, color, username, health);
+    return stmt.run(gridKey, x, y, color, username);
   } catch (error) {
     console.error("Error saving pixel:", error);
     throw error;
@@ -223,12 +216,12 @@ export function savePixel(gridKey, x, y, color, username, health = 100) {
 
 /**
  * Load all pixels from the database
- * @returns {Object} - Grid state object in format { "x,y": { color, username, health } }
+ * @returns {Object} - Grid state object in format { "x,y": { color, username } }
  */
 export function loadAllPixels() {
   try {
     const stmt = db.prepare(`
-      SELECT grid_key, color, username, health, placed_at 
+      SELECT grid_key, color, username, placed_at 
       FROM pixels 
       ORDER BY placed_at ASC
     `);
@@ -240,7 +233,6 @@ export function loadAllPixels() {
       gridState[pixel.grid_key] = {
         color: pixel.color,
         username: pixel.username,
-        health: pixel.health,
         placed_at: pixel.placed_at
       };
     });

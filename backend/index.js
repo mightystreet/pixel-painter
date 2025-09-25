@@ -89,8 +89,7 @@ wss.on("connection", (ws) => {
         // Update server grid state
         gridState[data.key] = { 
           color: data.color, 
-          username: data.username,
-          health: data.health || 100
+          username: data.username 
         };
         
         // Parse coordinates from key (format: "x,y")
@@ -98,7 +97,7 @@ wss.on("connection", (ws) => {
         
         // Save pixel to database
         try {
-          savePixel(data.key, x, y, data.color, data.username, data.health || 100);
+          savePixel(data.key, x, y, data.color, data.username);
           console.log(`💾 Pixel saved to database: ${data.key} by ${data.username}`);
         } catch (error) {
           console.error('❌ Error saving pixel to database:', error);
@@ -115,8 +114,7 @@ wss.on("connection", (ws) => {
               type: "cellUpdate", 
               key: data.key, 
               color: data.color, 
-              username: data.username,
-              health: data.health || 100
+              username: data.username 
             }));
           }
         });
